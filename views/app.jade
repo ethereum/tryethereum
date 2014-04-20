@@ -1,0 +1,89 @@
+head
+    script(src="angular.min.js")
+    script(src="app.js")
+    link(rel="stylesheet",type="text/css",href="bootstrap.min.css")
+    link(rel="stylesheet",type="text/css",href="main.css")
+body(ng-app="tryethereum"): div(ng-controller="TryEthereumCtrl")
+    table(cellpadding="20px")
+        tr
+            td: h3 My Wallet
+            td: h3 State Explorer
+        tr
+            td
+                table
+                    tr
+                        td Seed
+                        td: input(type="text",ng-model="seed")
+                    tr
+                        td Key
+                        td {{ key }}
+                    tr
+                        td Address
+                        td {{ address }}
+                    tr
+                        td Nonce
+                        td {{ account.nonce }}
+                    tr
+                        td Balance
+                        td {{ account.balance }}
+                    tr
+                        td Storage
+                        td
+                            table
+                                tr(ng-repeat="k in account.storage")
+                                    td k
+                                    td account.storage[k]
+                    tr
+                        td
+                        td: button.btn(ng-click="genseed()") Generate new account
+                    tr
+                        td
+                        td: button.btn(ng-click="alloc(address,1000000000000000000)") Gimme more money
+            td
+                table
+                    tr
+                        td Address
+                        td: input(type="text",ng-model="search_address")
+                    tr
+                        td Nonce
+                        td {{ search_account.nonce }}
+                    tr
+                        td Balance
+                        td {{ search_account.balance }}
+                    tr
+                        td Code
+                        td {{ search_account.code }}
+                    tr
+                        td Storage
+                        td
+                            table(cellpadding="20px")
+                                tr(ng-repeat="(k,v) in search_account.storage")
+                                    td {{ k }}
+                                    td {{ v }}
+        tr
+            td: h3 Submit Contract
+            td: h3 Submit Transaction
+        tr
+            td
+                textarea(rows="10",style="width:450px",ng-model="code")
+                div {{ response }}
+                div(style="color:red") {{ error }}
+                span
+                    span Endowment: 
+                    input(type="text",ng-model="endowment")
+                button.btn(ng-click="serpent('compile',code)") Compile
+                button.btn(ng-click="contract(account.nonce,endowment,code)") Submit
+            td
+                table
+                    tr
+                        td To
+                        td: input(type="text",ng-model="sendto")
+                    tr
+                        td Value
+                        td: input(type="text",ng-model="sendvalue")
+                    tr
+                        td Data (space-separated)
+                        td: input(type="text",ng-model="senddata")
+                    tr
+                        td
+                        td: button.btn(ng-click="sendtx(key, account.nonce, sendvalue, sendto, senddata || '')") Send
