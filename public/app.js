@@ -15,7 +15,7 @@ function TryEthereumCtrl($scope,$http) {
     $scope.serpent = function(arg,data) {
         $http.post('/serpent/'+arg,{ data: data })
              .success(function(r) {
-		         $scope.response = r.replace(/"/g,'') 
+		         $scope.response = r.replace(/"/g,'')
                  $scope.error = ''
              })
              .error(function(r) {
@@ -32,7 +32,7 @@ function TryEthereumCtrl($scope,$http) {
         q = q.substring(0,q.length-1)
         $http.get('/pyethtool/'+cmd+'?'+q)
              .success(function(r) {
-		         $scope.response = r.replace(/"/g,'') 
+		         $scope.response = r.replace(/"/g,'')
                  $scope.error = ''
              })
              .error($scope.errlogger)
@@ -101,14 +101,17 @@ function TryEthereumCtrl($scope,$http) {
         $scope.seed = encodeURIComponent((''+Math.random()).substring(2)+''+new Date().getTime())
     }
     $scope.genkey = function() {
-        $http.get('/pyethtool/sha3?data='+$scope.seed)
-            .then(function(r) {
-                $scope.key = $scope.dequote(r.data)
-                return $http.get('/pyethtool/privtoaddr?key='+$scope.key)
-            })
-            .then(function(r) {
-                $scope.address = $scope.dequote(r.data)
-            })
+        var hash = sha3($scope.seed);
+        $scope.key = CryptoJS.enc.Hex.stringify(hash);
+
+        // false flag important since key is uncompressed
+        var btcKey = Bitcoin.ECKey.fromHex($scope.key, false);
+
+        var bytes = Bitcoin.convert.hexToBytes(btcKey.pub.toHex()).slice(1);
+        var binaryForCryptoJs = CryptoJS.enc.Latin1.parse(Bitcoin.convert.bytesToString(bytes));
+
+        var addr = sha3(binaryForCryptoJs);
+        $scope.address = addr.toString().substr(24);
     }
     $scope.$watch('seed',$scope.genkey)
     $scope.fetchdata = function(address,dest) {
@@ -120,4 +123,8 @@ function TryEthereumCtrl($scope,$http) {
     }
     $scope.$watch('address',function() { $scope.fetchdata($scope.address,'account') })
     $scope.$watch('search_address',function() { $scope.fetchdata($scope.search_address,'search_account') })
+}
+
+function sha3(x) {
+    return CryptoJS.SHA3(x, { outputLength: 256 });
 }
