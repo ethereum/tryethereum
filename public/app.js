@@ -101,14 +101,8 @@ function TryEthereumCtrl($scope,$http) {
         $scope.seed = encodeURIComponent((''+Math.random()).substring(2)+''+new Date().getTime())
     }
     $scope.genkey = function() {
-        $http.get('/pyethtool/sha3?data='+$scope.seed)
-            .then(function(r) {
-                $scope.key = $scope.dequote(r.data)
-                return $http.get('/pyethtool/privtoaddr?key='+$scope.key)
-            })
-            .then(function(r) {
-                $scope.address = $scope.dequote(r.data)
-            })
+        var hash = CryptoJS.SHA3($scope.seed, { outputLength: 256 });
+        $scope.address = CryptoJS.enc.Hex.stringify(hash);
     }
     $scope.$watch('seed',$scope.genkey)
     $scope.fetchdata = function(address,dest) {
