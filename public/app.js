@@ -58,20 +58,22 @@ function TryEthereumCtrl($scope,$http) {
             .error($scope.errlogger)
     }
     $scope.sendtx = function(key, nonce, value, to, data) {
-        console.log('sending')
-        $http.post('/serpent/encode_datalist',{ data: data })
-             .then(function(datahex) {
-                 console.log(datahex.data)
-                 return $http.get('/pyethtool/mktx?0='+nonce+'&1='+value+'&2='+to+'&3='+datahex.data)
-             },$scope.errlogger)
-             .then(function(tx) {
-                 console.log(tx.data)
-                 return $http.get('/pyethtool/sign?0='+tx.data+'&1='+key)
-             },$scope.errlogger)
-             .then(function(signedTx) {
-                 console.log(signedTx.data)
-                 return $http.post('/applytx',{ data: signedTx.data })
-             },$scope.errlogger)
+        var datahex = {data:''};  // TODO: encodeDatalist(data);
+
+        var tx = transaction.mktx(
+                                util.bigInt(nonce),
+                                util.bigInt(value),
+                                to,
+                                datahex.data);
+        //console.log('mktx: ', tx);
+
+        var parsedTx = transaction.parse(util.decodeHex(tx));
+        //console.log('parsedTx: ', parsedTx);
+
+        var signedTx = transaction.sign(parsedTx, key);
+        //console.log('signedTx: ', signedTx);
+
+        $http.post('/applytx',{ data: signedTx })
              .then(function(r) {
                 $scope.response = r.data.response
                 $scope.error = ''
@@ -101,21 +103,12 @@ function TryEthereumCtrl($scope,$http) {
         $scope.seed = encodeURIComponent((''+Math.random()).substring(2)+''+new Date().getTime())
     }
     $scope.genkey = function() {
-        var hash = sha3($scope.seed);
+        var hash = util.sha3($scope.seed);
         $scope.key = CryptoJS.enc.Hex.stringify(hash);
-
-        // false flag important since key is uncompressed
-        var btcKey = Bitcoin.ECKey.fromHex($scope.key, false);
-
-        var bytes = Bitcoin.convert.hexToBytes(btcKey.pub.toHex()).slice(1);
-        var binaryForCryptoJs = CryptoJS.enc.Latin1.parse(Bitcoin.convert.bytesToString(bytes));
-
-        var addr = sha3(binaryForCryptoJs);
-        $scope.address = addr.toString().substr(24);
+        $scope.address = util.privToAddr($scope.key);
     }
     $scope.$watch('seed',$scope.genkey)
     $scope.fetchdata = function(address,dest) {
-        console.log(9)
         $http.get('/account_to_dict?address='+address)
             .success(function(r) {
                 $scope[dest] = r
@@ -123,8 +116,4 @@ function TryEthereumCtrl($scope,$http) {
     }
     $scope.$watch('address',function() { $scope.fetchdata($scope.address,'account') })
     $scope.$watch('search_address',function() { $scope.fetchdata($scope.search_address,'search_account') })
-}
-
-function sha3(x) {
-    return CryptoJS.SHA3(x, { outputLength: 256 });
 }
