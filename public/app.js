@@ -103,9 +103,8 @@ function TryEthereumCtrl($scope,$http) {
         $scope.seed = encodeURIComponent((''+Math.random()).substring(2)+''+new Date().getTime())
     }
     $scope.genkey = function() {
-        var hash = util.sha3($scope.seed);
-        $scope.key = CryptoJS.enc.Hex.stringify(hash);
-        $scope.address = util.privToAddr($scope.key);
+        $scope.key = Ethereum.util.sha3($scope.seed);
+        $scope.address = Ethereum.util.privToAddr($scope.key);
     }
     $scope.$watch('seed',$scope.genkey)
     $scope.fetchdata = function(address,dest) {
@@ -116,4 +115,6 @@ function TryEthereumCtrl($scope,$http) {
     }
     $scope.$watch('address',function() { $scope.fetchdata($scope.address,'account') })
     $scope.$watch('search_address',function() { $scope.fetchdata($scope.search_address,'search_account') })
+
+    $scope.seed = ''
 }
