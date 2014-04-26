@@ -69,7 +69,7 @@ var transaction = (function() {
         var iVal = my_calcPubkeyRecoveryParam(ecKey,
                         parsedSig.r, parsedSig.s, rawhash);
 
-        tx.v = util.bigInt(27 + iVal);  // TODO i%2 like in main.py ?
+        tx.v = util.bigInt(27 + (iVal%2));
         tx.r = parsedSig.r;
         tx.s = parsedSig.s
         tx.sender = util.privToAddr(key);

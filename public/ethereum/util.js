@@ -37,12 +37,14 @@ var util = (function() {
     }
 
     function coerce_addr_to_bin(x) {
-        // TODO isNumber case?
         if (x instanceof Bitcoin.BigInteger) {
             return encodeHex(zpad(intToBigEndian(x), 20));
         }
         else if (x.length === 40 || x.length === 0) {
             return decodeHex(x);
+        }
+        else if (_.isNumber(x)) {
+            throw new Error('coerce addr should be BigInteger');
         }
         else {
             return zpad(x, 20).slice(-20);
