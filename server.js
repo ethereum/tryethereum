@@ -114,12 +114,10 @@ app.post('/applytx',function(req,res) {
     cmd = 'pyethtool applytx "'+block+'" "'+req.param('data')+'"'
     var b = {}
     callProc(cmd, function(r,cb) {
-        r = r.trim()
-        r = ('['+r.substring(1,r.length-1)+']').replace(/'/g,'"')
         r = JSON.parse(r)
-        b.block = r[0]
-        b.response = r[1]
-        saveBlock(r[0],cb)
+        b.block = r.block
+        b.response = r.result
+        saveBlock(r.block,cb)
     }, mkrespcb(res,400,function() {
         res.json(b)
     }))
