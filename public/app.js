@@ -60,17 +60,17 @@ function TryEthereumCtrl($scope,$http) {
     $scope.sendtx = function(key, nonce, value, to, data) {
         var datahex = {data:''};  // TODO: encodeDatalist(data);
 
-        var tx = transaction.mktx(
-                                util.bigInt(nonce),
-                                util.bigInt(value),
+        var tx = Ethereum.transaction.mktx(
+                                Ethereum.util.bigInt(nonce),
                                 to,
+                                Ethereum.util.bigInt(value),
                                 datahex.data);
         //console.log('mktx: ', tx);
 
-        var parsedTx = transaction.parse(util.decodeHex(tx));
+        var parsedTx = Ethereum.transaction.parse(Ethereum.util.decodeHex(tx));
         //console.log('parsedTx: ', parsedTx);
 
-        var signedTx = transaction.sign(parsedTx, key);
+        var signedTx = Ethereum.transaction.sign(parsedTx, key);
         //console.log('signedTx: ', signedTx);
 
         $http.post('/applytx',{ data: signedTx })
