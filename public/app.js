@@ -84,13 +84,14 @@ function TryEthereumCtrl($scope,$http) {
     $scope.contract = function(nonce, endowment, code) {
         $http.post('/serpent/compile',{ data: code })
              .then(function(codehex) {
-                 return $http.get('/pyethtool/mkcontract?0='+nonce+'&1='+(endowment || 0)+'&2='+codehex.data)
-             },$scope.errlogger)
-             .then(function(tx) {
-                 return $http.get('/pyethtool/sign?0='+tx.data+'&1='+$scope.key)
-             },$scope.errlogger)
-             .then(function(signedTx) {
-                 return $http.post('/applytx',{ data: signedTx.data })
+                var ct = Ethereum.transaction.mkContract(
+                                        Ethereum.util.bigInt(nonce),
+                                        Ethereum.util.bigInt(endowment),
+                                        $scope.dequote(codehex.data));
+                var parsedTx = Ethereum.transaction.parse(
+                                    Ethereum.util.decodeHex(ct));
+                var signedTx = Ethereum.transaction.sign(parsedTx, $scope.key);
+                return $http.post('/applytx',{ data: signedTx })
              },$scope.errlogger)
              .then(function(r) {
                 console.log(r.data)
