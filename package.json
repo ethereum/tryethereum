@@ -1,22 +1,29 @@
 {
-    "name": "tryethereum",
-    "version": "0.0.1",
-    "description": "Ethereum testing server",
-    "dependencies": {
-        "underscore": "*",
-        "async": "*",
-        "crypto": "*",
-        "express": "3.1.0",
-        "jade": "*",
-        "mongodb": "*",
-        "bitcoinjs-lib": "https://github.com/bitfloor/bitcoinjs-lib/tarball/master"
-    },
-    "main": "main.js",
-    "author": "vbuterin",
-    "keywords": ["bitcoin", "crypto", "finance"],
-    "repository" : {                                                                      
-         "type": "git",                                                                    
-         "url": "https://github.com/vbuterin/multigui.git"                                     
-    },
-    "engines": { "node": "*" }
+  "name": "tryethereum",
+  "version": "0.0.1",
+  "description": "Ethereum testing server",
+  "dependencies": {
+    "underscore": "*",
+    "async": "*",
+    "crypto": "*",
+    "express": "3.1.0",
+    "jade": "*",
+    "mongodb": "*",
+    "bitcoinjs-lib": "https://github.com/bitfloor/bitcoinjs-lib/tarball/master",
+    "jshint": "~2.5.0"
+  },
+  "main": "main.js",
+  "author": "vbuterin",
+  "keywords": [
+    "bitcoin",
+    "crypto",
+    "finance"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vbuterin/multigui.git"
+  },
+  "engines": {
+    "node": "*"
+  }
 }
