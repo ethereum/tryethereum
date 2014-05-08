@@ -59,11 +59,13 @@ function TryEthereumCtrl($scope,$http) {
             .error($scope.errlogger)
     }
     $scope.sendtx = function(key, nonce, value, to, data) {
+        var dArr = data.split(' '); 
+        var encodedData = Ethereum.serpent.compiler.encodeDataList(dArr);
         var tx = Ethereum.transaction.mktx(
                                 Ethereum.util.bigInt(nonce),
                                 to,
                                 Ethereum.util.bigInt(value),
-                                data);
+                                Ethereum.util.encodeHex(encodedData));
         //console.log('mktx: ', tx);
 
         var parsedTx = Ethereum.transaction.parse(Ethereum.util.decodeHex(tx));
