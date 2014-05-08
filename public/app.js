@@ -1,3 +1,4 @@
+/*jshint asi:true*/
 angular.module('tryethereum', []);
 
 function TryEthereumCtrl($scope,$http) {
@@ -58,13 +59,11 @@ function TryEthereumCtrl($scope,$http) {
             .error($scope.errlogger)
     }
     $scope.sendtx = function(key, nonce, value, to, data) {
-        var datahex = {data:''};  // TODO: encodeDatalist(data);
-
         var tx = Ethereum.transaction.mktx(
                                 Ethereum.util.bigInt(nonce),
                                 to,
                                 Ethereum.util.bigInt(value),
-                                datahex.data);
+                                data);
         //console.log('mktx: ', tx);
 
         var parsedTx = Ethereum.transaction.parse(Ethereum.util.decodeHex(tx));
