@@ -59,7 +59,10 @@ function TryEthereumCtrl($scope,$http) {
             .error($scope.errlogger)
     }
     $scope.sendtx = function(key, nonce, value, to, data) {
-        var dArr = data.split(' '); 
+        var dArr = data.split(' ').map(function(x) {
+            var int = parseInt(x, 10);
+            return int ? int : x;
+        });
         var encodedData = Ethereum.serpent.compiler.encodeDataList(dArr);
         var tx = Ethereum.transaction.mktx(
                                 Ethereum.util.bigInt(nonce),
