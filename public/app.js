@@ -108,7 +108,7 @@ function TryEthereumCtrl($scope,$http) {
         $scope.seed = encodeURIComponent((''+Math.random()).substring(2)+''+new Date().getTime())
     }
     $scope.genkey = function() {
-        $scope.key = Ethereum.util.sha3($scope.seed);
+        $scope.key = Ethereum.util.sha3($scope.seed).toString();
         $scope.address = Ethereum.util.privToAddr($scope.key);
     }
     $scope.$watch('seed',$scope.genkey)
