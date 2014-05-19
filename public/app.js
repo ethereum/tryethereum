@@ -65,19 +65,21 @@ function TryEthereumCtrl($scope,$http) {
         });
         var encodedData = Ethereum.serpent.compiler.encodeDataList(dArr);
         var tx = Ethereum.transaction.mktx(
-                                Ethereum.util.bigInt(nonce),
+                                Ethereum.BigInteger(''+nonce),
                                 to,
-                                Ethereum.util.bigInt(value),
+                                Ethereum.BigInteger(''+value),
                                 Ethereum.util.encodeHex(encodedData));
         //console.log('mktx: ', tx);
 
-        var parsedTx = Ethereum.transaction.parse(Ethereum.util.decodeHex(tx));
+        var parsedTx = Ethereum.transaction.hex_deserialize(tx);
         //console.log('parsedTx: ', parsedTx);
 
         var signedTx = Ethereum.transaction.sign(parsedTx, key);
         //console.log('signedTx: ', signedTx);
 
-        $http.post('/applytx',{ data: signedTx })
+        var signedData = Ethereum.transaction.hex_serialize(signedTx);
+
+        $http.post('/applytx',{ data: signedData })
              .then(function(r) {
                 $scope.response = r.data.response
                 $scope.error = ''
@@ -89,8 +91,8 @@ function TryEthereumCtrl($scope,$http) {
         $http.post('/serpent/compile',{ data: code })
              .then(function(codehex) {
                 var ct = Ethereum.transaction.mkContract(
-                                        Ethereum.util.bigInt(nonce),
-                                        Ethereum.util.bigInt(endowment),
+                                        Ethereum.BigInteger(''+nonce),
+                                        Ethereum.BigInteger(''+endowment),
                                         $scope.dequote(codehex.data));
                 var parsedTx = Ethereum.transaction.parse(
                                     Ethereum.util.decodeHex(ct));
