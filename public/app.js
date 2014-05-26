@@ -94,8 +94,7 @@ function TryEthereumCtrl($scope,$http) {
                                         Ethereum.BigInteger(''+nonce),
                                         Ethereum.BigInteger(''+endowment),
                                         $scope.dequote(codehex.data));
-                var parsedTx = Ethereum.transaction.parse(
-                                    Ethereum.util.decodeHex(ct));
+                var parsedTx = Ethereum.transaction.hex_deserialize(ct);
                 var signedTx = Ethereum.transaction.sign(parsedTx, $scope.key);
                 return $http.post('/applytx',{ data: signedTx })
              },$scope.errlogger)
