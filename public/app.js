@@ -96,7 +96,8 @@ function TryEthereumCtrl($scope,$http) {
                                         $scope.dequote(codehex.data));
                 var parsedTx = Ethereum.transaction.hex_deserialize(ct);
                 var signedTx = Ethereum.transaction.sign(parsedTx, $scope.key);
-                return $http.post('/applytx',{ data: signedTx })
+                var signedData = Ethereum.transaction.hex_serialize(signedTx);
+                return $http.post('/applytx',{ data: signedData })
              },$scope.errlogger)
              .then(function(r) {
                 console.log(r.data)
