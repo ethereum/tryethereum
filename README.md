@@ -7,7 +7,7 @@ Try Ethereum with an online interface.
 - Install nodejs, npm, mongo-db
 - Run "npm install" and mongod
 - node server.js
-- Clone and build https://github.com/ethereum/pyethereum
+- Clone and build https://github.com/ethereum/pyethereum.  Make pyethtool globally accessible (eg create symlink /usr/local/bin/pyethtool)
 - Clone and build https://github.com/ethereum/serpent
 - In browser go to http://localhost:3000
 
