@@ -3,7 +3,15 @@ tryethereum
 
 Try Ethereum with an online interface.
 
-### Running
+### Recommended
+https://github.com/ethereum/cpp-ethereum/releases
+
+It is the most up-to-date and feature-complete including a HTML/JS front-end API and a JavaScript console.
+
+Currently, tryethereum is on pause (https://github.com/ethereum/tryethereum/issues/8)
+
+
+### Prior instructions for running
 - Install nodejs, npm, mongo-db
 - Run "npm install" and mongod
 - node server.js
